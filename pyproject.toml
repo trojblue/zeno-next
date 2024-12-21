@@ -5,8 +5,8 @@ description = "Interactive Evaluation Framework for Machine Learning"
 license = "MIT"
 authors = ["Ángel Alexander Cabrera <alex.cabrera@gmail.com>"]
 readme = "README.md"
-repository = "https://github.com/zeno-ml/zeno"
-homepage = "https://zenoml.com"
+repository = "https://github.com/trojblue/zeno-next"
+homepage = "https://github.com/trojblue"
 keywords = ["ml", "testing", "evaluation", "machine learning", "ai"]
 packages = [{ include = "zeno" }]
 include = ["zeno/frontend/**/*"]
