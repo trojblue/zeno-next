@@ -2,6 +2,7 @@
 
 import sys
 from typing import Dict, Union
+import pandas as pd
 
 import pkg_resources
 import uvicorn
@@ -78,6 +79,48 @@ def zeno(args: Union[str, ZenoParameters, Dict]):
         args (Union[str, ZenoParameters, Dict]): The configuration for Zeno.
         ZenoParameters or dict when called from Python, str if called from commandline.
     """
+
+    params = read_config(args)
+
+    if params.serve:
+        global ZENO_SERVER_PROCESS
+        if ZENO_SERVER_PROCESS is not None:
+            ZENO_SERVER_PROCESS.terminate()
+
+        ZENO_SERVER_PROCESS = Process(
+            target=run_zeno,
+            args=(params,),
+        )
+        ZENO_SERVER_PROCESS.start()
+
+        if not is_notebook():
+            ZENO_SERVER_PROCESS.join()
+    else:
+        zeno = ZenoBackend(params)
+        return zeno
+
+
+def zeno_next(df: pd.DataFrame, data_path: str, data_column: str, port: int):
+    """Main entrypoint for Zeno. This is called directly by the user in a notebook or
+    script, or called by the command_line function when run by CLI.
+
+    Args:
+        df (pd.DataFrame): The dataframe to be served. contains at least one column with image paths.
+        data_path (str): The root path to the data. (e.g. /path/to/data)
+        data_column (str): The column name in the dataframe that contains the image paths.
+        port (int): The port to run the server on.
+    """
+
+    args = {
+        "metadata": df,
+        "view": "image-classification",
+        "data_path": data_path,
+        "data_column": data_column,
+        "id_column": data_column,
+        "label_column": data_column,
+        "batch_size": 1000,
+        "port": port,
+    }
 
     params = read_config(args)
 
