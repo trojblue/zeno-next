@@ -29,6 +29,7 @@ uvicorn = ">=0.22,<0.24"
 websockets = "^11.0"
 zeno-sliceline = "^0.0.1"
 numpy = "*"
+boto3 = "^1.35.86"
 
 [tool.poetry.dev-dependencies]
 black = "^23.9.1"
