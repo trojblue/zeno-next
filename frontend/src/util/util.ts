@@ -90,8 +90,33 @@ export function getMetricRange(res: number[][]): [number, number] {
 }
 
 // update model dependent slices in compare tab
+// export function updateModelDependentSlices(name, mod, slis) {
+// 	slis.forEach((sli) => {
+// 		const preds = sli.filterPredicates.predicates;
+// 		if (doesModelDependOnPredicates(preds)) {
+// 			slicesForComparison.update((ms) => {
+// 				ms.set(sli.sliceName + " (" + name + ")", <Slice>{
+// 					sliceName: sli.sliceName + " (" + name + ")",
+// 					folder: sli.folder,
+// 					filterPredicates: setModelForFilterPredicateGroup(
+// 						sli.filterPredicates,
+// 						mod
+// 					),
+// 				});
+// 				return ms;
+// 			});
+// 		}
+// 	});
+// }
+
 export function updateModelDependentSlices(name, mod, slis) {
 	slis.forEach((sli) => {
+		// Ensure sli and sli.filterPredicates are defined
+		if (!sli || !sli.filterPredicates || !sli.filterPredicates.predicates) {
+			console.warn(`Skipping slice: ${sli?.sliceName || "Unnamed slice"} due to missing filterPredicates`);
+			return; // Skip this iteration
+		}
+
 		const preds = sli.filterPredicates.predicates;
 		if (doesModelDependOnPredicates(preds)) {
 			slicesForComparison.update((ms) => {
@@ -108,6 +133,7 @@ export function updateModelDependentSlices(name, mod, slis) {
 		}
 	});
 }
+
 
 function columnTypeOrder(colType: ZenoColumnType) {
 	switch (colType) {

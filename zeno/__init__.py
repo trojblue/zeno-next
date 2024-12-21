@@ -8,7 +8,7 @@ from zeno.api import (
     metric,
     model,
 )
-from zeno.runner import get_server, zeno
+from zeno.runner import get_server, zeno, zeno_next
 
 __all__ = [
     "DistillReturn",
@@ -21,4 +21,5 @@ __all__ = [
     "metric",
     "model",
     "zeno",
+    "zeno_next",
 ]

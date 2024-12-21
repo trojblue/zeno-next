@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict, List, Union
 
 from numpy.typing import NDArray
 from pandas import DataFrame, Series
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ZenoOptions(BaseModel):
@@ -39,7 +39,6 @@ class ZenoParameters(BaseModel):
     """Options passed to the backend processing pipeline."""
 
     metadata: Union[DataFrame, str]
-    # If run from command line, config_file will be a path to a config file.
     config_file: str = ""
     functions: Union[List[Callable], str] = []
     view: str = ""
@@ -51,7 +50,7 @@ class ZenoParameters(BaseModel):
     label_path: str = ""
     batch_size: int = 1
     cache_path: str = ""
-    calculate_histogram_metrics = True
+    calculate_histogram_metrics: bool = True
     editable: bool = True
     multiprocessing: bool = True
     serve: bool = True
@@ -59,8 +58,7 @@ class ZenoParameters(BaseModel):
     port: int = 8000
     host: str = "localhost"
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class ModelReturn(BaseModel):
@@ -79,8 +77,7 @@ class ModelReturn(BaseModel):
                      List[NDArray], NDArray, None] = None
     other_returns: Union[Dict[str, Union[Series, List[Any]]], None] = None
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class DistillReturn(BaseModel):
@@ -92,8 +89,7 @@ class DistillReturn(BaseModel):
 
     distill_output: Union[Series, List[Any]]
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class MetricReturn(BaseModel):
@@ -105,8 +101,7 @@ class MetricReturn(BaseModel):
 
     metric: float
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 def model(func: Callable[[str], Callable[[DataFrame, ZenoOptions], ModelReturn]]):
@@ -128,7 +123,7 @@ def model(func: Callable[[str], Callable[[DataFrame, ZenoOptions], ModelReturn]]
 
 
 def distill(func: Callable[[DataFrame, ZenoOptions], DistillReturn]):
-    """Deocrator function for distill functions.
+    """Decorator function for distill functions.
 
     Args:
         func (Callable[[DataFrame, ZenoOptions], DistillReturn]):

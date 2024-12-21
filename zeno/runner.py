@@ -2,6 +2,7 @@
 
 import sys
 from typing import Dict, Union
+import pandas as pd
 
 import pkg_resources
 import uvicorn
@@ -22,7 +23,7 @@ def command_line():
     if len(sys.argv) == 1 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
         print(
             "\n \033[1mZeno\033[0m",
-            pkg_resources.get_distribution("zenoml").version,
+            pkg_resources.get_distribution("zenoml-next").version,
             " - Machine learning evaluation framework.",
             "\n\n",
             "\033[1mUSAGE \033[0m \n\t",
@@ -78,6 +79,50 @@ def zeno(args: Union[str, ZenoParameters, Dict]):
         args (Union[str, ZenoParameters, Dict]): The configuration for Zeno.
         ZenoParameters or dict when called from Python, str if called from commandline.
     """
+
+    params = read_config(args)
+
+    if params.serve:
+        global ZENO_SERVER_PROCESS
+        if ZENO_SERVER_PROCESS is not None:
+            ZENO_SERVER_PROCESS.terminate()
+
+        ZENO_SERVER_PROCESS = Process(
+            target=run_zeno,
+            args=(params,),
+        )
+        ZENO_SERVER_PROCESS.start()
+
+        if not is_notebook():
+            ZENO_SERVER_PROCESS.join()
+    else:
+        zeno = ZenoBackend(params)
+        return zeno
+
+
+def zeno_next(df: pd.DataFrame, data_column: str, data_path: str = "", port: int = None):
+    """Main entrypoint for Zeno. This is called directly by the user in a notebook or
+    script, or called by the command_line function when run by CLI.
+
+    Args:
+        df (pd.DataFrame): The dataframe to be served. contains at least one column with image paths.
+        data_column (str): The column name in the dataframe that contains the image paths.
+        data_path (str): The root path to the data. (e.g. /path/to/data)
+        port (int): The port to run the server on. If None, the first available port is chosen.
+    """
+
+    args = {
+        "metadata": df,
+        "view": "image-classification",
+        "data_path": data_path,
+        "data_column": data_column,
+        "id_column": data_column,
+        "label_column": data_column,
+        "batch_size": 1000,
+    }
+
+    if port is not None:
+        args["port"] = port
 
     params = read_config(args)
 

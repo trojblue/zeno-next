@@ -1,21 +1,54 @@
 # ZenoML-Next
 
-the repo aims to keep the existing ZenoML functional, while adding little things that I might personally find helpful.
+This fork of ZenoML aims to maintain the existing functionality while adding small, practical features for personal use.
+
+## Features
+
+- **New entry point**: `zeno_next()` simplifies usage in notebooks with fixed inputs.
+- **S3 URI support**: Enables S3 paths as the image column (requires `aws configure` on the host machine).
+
+### Example: Using `zeno_next`
+
+```python
+import pandas as pd
+from zeno import zeno_next
+
+df = pd.read_parquet("tmp_df.parquet")
+print(len(df))
+
+# Use local paths:
+# data_column = "filename"
+# MOUNT_PATH = "/root/danbooru_images"
+
+# Use S3 URI:
+data_column = "s3_uri"
+MOUNT_PATH = ""
+
+ZENO_PORT = 8019
+
+# Clear the cache if needed:
+# !rm -rf .zeno_cache/
+zeno_next(df, data_column, MOUNT_PATH, ZENO_PORT)
+```
 
 
-Upkeeps:
+## Upkeeps
 
 - bump `pydantic` to version 2.x
 
 ## Building Repo
 
 ```bash
+# see DEVELOPMENT.md for setup repo
 python -m pip install build twine
 python -m build
 twine check dist/*
 twine upload dist/*
 ```
 
+<br>
+<br>
+<br>
 
 
 ## Original README

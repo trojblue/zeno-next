@@ -11,6 +11,9 @@ from inspect import getsource
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Union
 
+import boto3
+from urllib.parse import urlparse
+
 import pandas as pd
 from pandas import DataFrame
 from pathos.multiprocessing import ProcessingPool as Pool
@@ -88,12 +91,15 @@ class ZenoBackend(object):
         self.gradio_input_columns: List[str] = []
 
         self.status: str = "Initializing"
-        self.folders: List[str] = read_pickle("folders.pickle", self.cache_path, [])
-        self.reports: List[Report] = read_pickle("reports.pickle", self.cache_path, [])
+        self.folders: List[str] = read_pickle(
+            "folders.pickle", self.cache_path, [])
+        self.reports: List[Report] = read_pickle(
+            "reports.pickle", self.cache_path, [])
         self.slices: Dict[str, Slice] = read_pickle(
             "slices.pickle", self.cache_path, {}
         )
-        self.tags: Dict[str, Tag] = read_pickle("tags.pickle", self.cache_path, {})
+        self.tags: Dict[str, Tag] = read_pickle(
+            "tags.pickle", self.cache_path, {})
         if "All Instances" not in self.slices:
             orig_slices = self.slices
             all_instance = Slice(
@@ -213,7 +219,8 @@ class ZenoBackend(object):
 
         for fn in self.predistill_functions.values():
             self.columns.append(
-                ZenoColumn(column_type=ZenoColumnType.PREDISTILL, name=fn.__name__)
+                ZenoColumn(column_type=ZenoColumnType.PREDISTILL,
+                           name=fn.__name__)
             )
         for fn in self.postdistill_functions.values():
             for m in self.model_names:
@@ -270,7 +277,8 @@ class ZenoBackend(object):
         for predistill_column in [
             c for c in self.columns if c.column_type == ZenoColumnType.PREDISTILL
         ]:
-            save_path = Path(self.cache_path, str(predistill_column) + ".pickle")
+            save_path = Path(self.cache_path, str(
+                predistill_column) + ".pickle")
 
             load_series(self.df, predistill_column, save_path)
 
@@ -333,7 +341,8 @@ class ZenoBackend(object):
             embedding_hash = str(embedding_column)
 
             model_save_path = Path(self.cache_path, model_hash + ".pickle")
-            embedding_save_path = Path(self.cache_path, embedding_hash + ".pickle")
+            embedding_save_path = Path(
+                self.cache_path, embedding_hash + ".pickle")
 
             load_series(self.df, model_column, model_save_path)
             load_series(self.df, embedding_column, embedding_save_path)
@@ -342,7 +351,8 @@ class ZenoBackend(object):
                 models_to_run.append(model_name)
             else:
                 self.df[model_hash] = self.df[model_hash].convert_dtypes()
-                model_column.metadata_type = get_metadata_type(self.df[model_hash])
+                model_column.metadata_type = get_metadata_type(
+                    self.df[model_hash])
                 self.complete_columns.append(model_column)
 
                 # Check if there were saved postdistill columns:
@@ -473,12 +483,14 @@ class ZenoBackend(object):
                 continue
 
             if metric_key.metric == "" or self.label_column.name == "":
-                return_metrics.append(GroupMetric(metric=None, size=filt_df.shape[0]))
+                return_metrics.append(GroupMetric(
+                    metric=None, size=filt_df.shape[0]))
             else:
                 metric = self.calculate_metric(
                     filt_df, metric_key.model, metric_key.metric
                 )
-                return_metrics.append(GroupMetric(metric=metric, size=filt_df.shape[0]))
+                return_metrics.append(GroupMetric(
+                    metric=metric, size=filt_df.shape[0]))
         return return_metrics
 
     def get_metrics_for_slices_and_tags(
@@ -495,20 +507,24 @@ class ZenoBackend(object):
                 self.df, metric_key.sli.filter_predicates, tag_ids, filter_ids, tag_list
             )
             if metric_key.metric == "" or self.label_column.name == "":
-                return_metrics.append(GroupMetric(metric=None, size=filt_df.shape[0]))
+                return_metrics.append(GroupMetric(
+                    metric=None, size=filt_df.shape[0]))
             else:
                 metric = self.calculate_metric(
                     filt_df, metric_key.model, metric_key.metric
                 )
-                return_metrics.append(GroupMetric(metric=metric, size=filt_df.shape[0]))
+                return_metrics.append(GroupMetric(
+                    metric=metric, size=filt_df.shape[0]))
         return return_metrics
 
     def get_metrics_for_tags(self, requests: List[TagMetricKey]) -> List[GroupMetric]:
         return_metrics: List[GroupMetric] = []
         for tag_metric_key in requests:
-            filt_df = filter_table(self.df, None, tag_metric_key.tag.selection_ids)
+            filt_df = filter_table(
+                self.df, None, tag_metric_key.tag.selection_ids)
             if tag_metric_key.metric == "" or self.label_column.name == "":
-                return_metrics.append(GroupMetric(metric=None, size=filt_df.shape[0]))
+                return_metrics.append(GroupMetric(
+                    metric=None, size=filt_df.shape[0]))
             else:
                 # if the tag is empty
                 if len(tag_metric_key.tag.selection_ids.ids) == 0:
@@ -516,7 +532,8 @@ class ZenoBackend(object):
                 metric = self.calculate_metric(
                     filt_df, tag_metric_key.model, tag_metric_key.metric
                 )
-                return_metrics.append(GroupMetric(metric=metric, size=filt_df.shape[0]))
+                return_metrics.append(GroupMetric(
+                    metric=metric, size=filt_df.shape[0]))
         return return_metrics
 
     def calculate_metric(
@@ -547,7 +564,8 @@ class ZenoBackend(object):
                     "output_path": os.path.join(self.cache_path, output_hash),
                     "distill_columns": dict(
                         zip(
-                            [c.name for c in distill_fns], [str(c) for c in distill_fns]
+                            [c.name for c in distill_fns], [
+                                str(c) for c in distill_fns]
                         )
                     ),
                 }
@@ -566,7 +584,8 @@ class ZenoBackend(object):
                 update={
                     "distill_columns": dict(
                         zip(
-                            [c.name for c in distill_fns], [str(c) for c in distill_fns]
+                            [c.name for c in distill_fns], [
+                                str(c) for c in distill_fns]
                         )
                     ),
                 }
@@ -628,14 +647,35 @@ class ZenoBackend(object):
         )
         req_columns = [str(col) for col in req.columns]
         if req.diff_column_1 and req.diff_column_2:
-            filt_df = generate_diff_cols(filt_df, req.diff_column_1, req.diff_column_2)
+            filt_df = generate_diff_cols(
+                filt_df, req.diff_column_1, req.diff_column_2)
             req_columns.append("diff")
         if req.sort[0]:
-            filt_df = filt_df.sort_values(str(req.sort[0]), ascending=req.sort[1])
-        filt_df = filt_df.iloc[req.slice_range[0] : req.slice_range[1]].copy()
+            filt_df = filt_df.sort_values(
+                str(req.sort[0]), ascending=req.sort[1])
+        filt_df = filt_df.iloc[req.slice_range[0]: req.slice_range[1]].copy()
         if self.data_prefix != "":
             # Add data prefix to data column depending on type of data_path.
             filt_df.loc[:, str(self.data_column)] = (
                 self.data_prefix + filt_df[str(self.data_column)]
             )
+
+        # Presign S3 URIs
+        s3_client = boto3.client('s3')
+
+        def presign_s3_uri(uri):
+            parsed_uri = urlparse(uri)
+            if parsed_uri.scheme == 's3':
+                bucket = parsed_uri.netloc
+                key = parsed_uri.path.lstrip('/')
+                return s3_client.generate_presigned_url(
+                    'get_object',
+                    Params={'Bucket': bucket, 'Key': key},
+                    ExpiresIn=3600*10  # 10 hour expiration
+                )
+            return uri
+
+        filt_df.loc[:, str(self.data_column)] = filt_df[str(
+            self.data_column)].apply(presign_s3_uri)
+
         return filt_df.loc[:, req_columns].to_json(orient="records")
