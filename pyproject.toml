@@ -28,6 +28,7 @@ tqdm = "^4.64.0"
 uvicorn = ">=0.22,<0.24"
 websockets = "^11.0"
 zeno-sliceline = "^0.0.1"
+numpy = "*"
 
 [tool.poetry.dev-dependencies]
 black = "^23.9.1"

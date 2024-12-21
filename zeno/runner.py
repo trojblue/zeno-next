@@ -22,7 +22,7 @@ def command_line():
     if len(sys.argv) == 1 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
         print(
             "\n \033[1mZeno\033[0m",
-            pkg_resources.get_distribution("zenoml").version,
+            pkg_resources.get_distribution("zenoml-next").version,
             " - Machine learning evaluation framework.",
             "\n\n",
             "\033[1mUSAGE \033[0m \n\t",
