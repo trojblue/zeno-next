@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "zenoml-next"
 version = "0.6.5"
-description = "Interactive Evaluation Framework for Machine Learning"
+description = "Upkeeping the now archived Zeno, the AI Data Management & Evaluation Platform"
 license = "MIT"
-authors = ["Ángel Alexander Cabrera <alex.cabrera@gmail.com>"]
+authors = ["Ángel Alexander Cabrera <alex.cabrera@gmail.com>", "trojblue <trojblue@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/trojblue/zeno-next"
 homepage = "https://github.com/trojblue"
