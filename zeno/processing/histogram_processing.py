@@ -81,18 +81,23 @@ def histogram_counts(df: pd.DataFrame, req: HistogramRequest) -> List[List[int]]
             counts = filt_df.groupby([str(col)]).size()
             ret.append(
                 [
-                    counts[b.bucket] if b.bucket in counts else 0  # type: ignore
+                    # type: ignore
+                    counts[b.bucket] if b.bucket in counts else 0
                     for b in r.buckets
                 ]
             )
         elif col.metadata_type == MetadataType.BOOLEAN:
             ret.append(
-                [filt_df[str(col)].sum(), len(filt_df) - filt_df[str(col)].sum()]
+                [filt_df[str(col)].sum(), len(filt_df) -
+                 filt_df[str(col)].sum()]
             )
         elif col.metadata_type == MetadataType.CONTINUOUS:
-            bucs = [b.bucket for b in r.buckets]
+            bucs = [b.bucket for b in r.buckets]  # Extract bucket boundaries
             ret.append(
-                filt_df.groupby([pd.cut(filt_df[str(col)], bucs)])  # type: ignore
+                filt_df.groupby(
+                    # Explicitly specify behavior
+                    [pd.cut(filt_df[str(col)], bucs)], observed=False
+                )  # type: ignore
                 .size()
                 .astype(int)
                 .tolist()
@@ -170,7 +175,7 @@ def filter_by_string(df: pd.DataFrame, req: StringFilterRequest) -> List[str]:
 
         for r in ret[0:5]:
             idx = r.find(keyword)
-            loc_str = r[0 if idx < 20 else idx - 20 : idx + 20]
+            loc_str = r[0 if idx < 20 else idx - 20: idx + 20]
             if len(r) > 40 + len(keyword):
                 if idx - 20 > 0:
                     loc_str = "..." + loc_str
@@ -193,7 +198,7 @@ def filter_by_string(df: pd.DataFrame, req: StringFilterRequest) -> List[str]:
             idx = re.search(keyword, r, flags=flag)
             if idx is not None:
                 idx = idx.start()
-                loc_str = r[0 if idx < 20 else idx - 20 : idx + 20]
+                loc_str = r[0 if idx < 20 else idx - 20: idx + 20]
                 if len(r) > 40 + len(keyword):
                     if idx - 20 > 0:
                         loc_str = "..." + loc_str
