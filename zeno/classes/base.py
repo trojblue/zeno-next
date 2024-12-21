@@ -2,18 +2,19 @@ from enum import Enum
 from typing import Optional
 
 from pandas import Series
-from pydantic.v1 import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-def to_camel(string):
+def to_camel(string: str) -> str:
     components = string.split("_")
     return components[0] + "".join(x.title() for x in components[1:])
 
 
 class CamelModel(BaseModel):
-    class Config:
-        alias_generator = to_camel
-        allow_population_by_field_name = True
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True  # replaces allow_population_by_field_name=True
+    )
 
 
 class ZenoColumnType(str, Enum):
@@ -60,5 +61,4 @@ class DataProcessingReturn(BaseModel):
     column: ZenoColumn
     output: Series
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)

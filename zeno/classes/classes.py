@@ -2,8 +2,7 @@
 
 from typing import List, Optional, Tuple, Union
 
-from pydantic.v1 import BaseModel
-
+from pydantic import BaseModel
 from zeno.classes.base import CamelModel, ZenoColumn
 from zeno.classes.slice import FilterIds, FilterPredicateGroup, Slice
 
