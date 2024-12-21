@@ -1,12 +1,31 @@
-# This repository has been deprecated in favor of [ZenoHub](https://github.com/zeno-ml/zeno-hub) and is no longer actively maintained.
+# ZenoML-Next
+
+the repo aims to keep the existing ZenoML functional, while adding little things that I might personally find helpful.
+
+
+Upkeeps:
+
+- bump `pydantic` to version 2.x
+
+## Building Repo
+
+```bash
+python -m pip install build twine
+python -m build
+twine check dist/*
+twine upload dist/*
+```
+
+
+
+## Original README
+
 
 <img src="https://zenoml.com/img/zeno.png" width="250px"/>
 
-[![PyPI version](https://badge.fury.io/py/zenoml.svg)](https://badge.fury.io/py/zenoml)
-![Github Actions CI tests](https://github.com/zeno-ml/zeno/actions/workflows/ci.yml/badge.svg)
+[![PyPI version](https://badge.fury.io/py/zenoml-next.svg)](https://badge.fury.io/py/zenoml-next)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![DOI](https://img.shields.io/badge/doi-10.1145%2F3544548.3581268-red)](https://cabreraalex.com/paper/zeno)
-[![Discord](https://img.shields.io/discord/1086004954872950834)](https://discord.gg/km62pDKAkE)
 
 Zeno is a general-purpose framework for evaluating machine learning models.
 It combines a **Python API** with an **interactive UI** to allow users to discover, explore, and analyze the performance of their models across diverse use cases.
