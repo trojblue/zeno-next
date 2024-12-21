@@ -18,7 +18,7 @@ print(len(df))
 
 # Use local paths:
 # data_column = "filename"
-# MOUNT_PATH = "/lv0/yada/aesthetic_eagle_5category_iter99_images"
+# MOUNT_PATH = "/root/danbooru_images"
 
 # Use S3 URI:
 data_column = "s3_uri"
