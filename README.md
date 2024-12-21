@@ -1,6 +1,14 @@
 # ZenoML-Next
 
+[![PyPI version](https://badge.fury.io/py/zenoml-next.svg)](https://badge.fury.io/py/zenoml-next)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+
 This fork of ZenoML aims to maintain the existing functionality while adding small, practical features for personal use.
+
+
+```bash
+pip install zenoml_next
+```
 
 ## Features
 
@@ -56,8 +64,7 @@ twine upload dist/*
 
 <img src="https://zenoml.com/img/zeno.png" width="250px"/>
 
-[![PyPI version](https://badge.fury.io/py/zenoml-next.svg)](https://badge.fury.io/py/zenoml-next)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+
 [![DOI](https://img.shields.io/badge/doi-10.1145%2F3544548.3581268-red)](https://cabreraalex.com/paper/zeno)
 
 Zeno is a general-purpose framework for evaluating machine learning models.
