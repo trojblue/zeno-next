@@ -1,36 +1,38 @@
 # ZenoML-Next
 
-the repo aims to keep the existing ZenoML functional, while adding little things that I might personally find helpful.
+This fork of ZenoML aims to maintain the existing functionality while adding small, practical features for personal use.
 
+## Features
 
-Feats:
+- **New entry point**: `zeno_next()` simplifies usage in notebooks with fixed inputs.
+- **S3 URI support**: Enables S3 paths as the image column (requires `aws configure` on the host machine).
 
-- **new entry point**:  `zeno_next()` with fixed inputs for easier use in notebooks:
-```python
-import pandas as pd
-from zeno import zeno_next
-
-df = pd.read_parquet("tmp_df.parquet")
-data_column = "filename"
-mount_path = "/root/rated_images" # defaults to "" 
-zeno_port = 8019  # can be omitted
-
-# !rm -rf .zeno_cache/
-zeno_next(df, data_column, mount_path, zeno_port)
-```
-
-- **s3 uri support**: allow using s3 uri as image path column (requires `aws configure` set on host machine):
+### Example: Using `zeno_next`
 
 ```python
 import pandas as pd
 from zeno import zeno_next
 
 df = pd.read_parquet("tmp_df.parquet")
+print(len(df))
+
+# Use local paths:
+# data_column = "filename"
+# MOUNT_PATH = "/lv0/yada/aesthetic_eagle_5category_iter99_images"
+
+# Use S3 URI:
 data_column = "s3_uri"
-zeno_next(df, data_column)  # launch with default port
+MOUNT_PATH = ""
+
+ZENO_PORT = 8019
+
+# Clear the cache if needed:
+# !rm -rf .zeno_cache/
+zeno_next(df, data_column, MOUNT_PATH, ZENO_PORT)
 ```
 
-Upkeeps:
+
+## Upkeeps
 
 - bump `pydantic` to version 2.x
 
@@ -44,6 +46,8 @@ twine check dist/*
 twine upload dist/*
 ```
 
+<br>
+<br>
 <br>
 
 
