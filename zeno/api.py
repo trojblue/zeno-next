@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict, List, Union
 
 from numpy.typing import NDArray
 from pandas import DataFrame, Series
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 
 
 class ZenoOptions(BaseModel):
@@ -75,7 +75,8 @@ class ModelReturn(BaseModel):
     """
 
     model_output: Union[Series, List[Any]]
-    embedding: Union[Series, List[List[float]], List[NDArray], NDArray, None] = None
+    embedding: Union[Series, List[List[float]],
+                     List[NDArray], NDArray, None] = None
     other_returns: Union[Dict[str, Union[Series, List[Any]]], None] = None
 
     class Config:

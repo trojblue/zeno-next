@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Optional
 
 from pandas import Series
-from pydantic import BaseModel
+from pydantic.v1 import BaseModel
 
 
 def to_camel(string):
