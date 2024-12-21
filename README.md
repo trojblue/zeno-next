@@ -5,31 +5,30 @@ the repo aims to keep the existing ZenoML functional, while adding little things
 
 Feats:
 
-- **new entry point**:  `zeno_next()` with fixed inputs for easier use in notebooks
+- **new entry point**:  `zeno_next()` with fixed inputs for easier use in notebooks:
 ```python
 import pandas as pd
 from zeno import zeno_next
 
 df = pd.read_parquet("tmp_df.parquet")
 data_column = "filename"
-mount_path = "/lv0/yada/aesthetic_eagle_5category_iter99_images" # defaults to "" if not specified
+mount_path = "/root/rated_images" # defaults to "" 
 zeno_port = 8019  # can be omitted
 
 # !rm -rf .zeno_cache/
 zeno_next(df, data_column, mount_path, zeno_port)
 ```
 
-- **s3 uri support**: allow using s3 uri as image path column (requires `aws configure` set on host machine)
+- **s3 uri support**: allow using s3 uri as image path column (requires `aws configure` set on host machine):
 
 ```python
-....
+import pandas as pd
+from zeno import zeno_next
+
 df = pd.read_parquet("tmp_df.parquet")
 data_column = "s3_uri"
 zeno_next(df, data_column)  # launch with default port
 ```
-
-
-
 
 Upkeeps:
 
@@ -38,12 +37,14 @@ Upkeeps:
 ## Building Repo
 
 ```bash
+# see DEVELOPMENT.md for setup repo
 python -m pip install build twine
 python -m build
 twine check dist/*
 twine upload dist/*
 ```
 
+<br>
 
 
 ## Original README
