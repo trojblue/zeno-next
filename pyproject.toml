@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "zenoml-next"
-version = "0.6.6"
+version = "0.6.7"
 description = "Upkeeping the now archived Zeno, the AI Data Management & Evaluation Platform"
 license = "MIT"
 authors = ["Ángel Alexander Cabrera <alex.cabrera@gmail.com>", "trojblue <trojblue@gmail.com>"]
