@@ -100,15 +100,15 @@ def zeno(args: Union[str, ZenoParameters, Dict]):
         return zeno
 
 
-def zeno_next(df: pd.DataFrame, data_path: str, data_column: str, port: int):
+def zeno_next(df: pd.DataFrame, data_column: str, data_path: str = "", port: int = None):
     """Main entrypoint for Zeno. This is called directly by the user in a notebook or
     script, or called by the command_line function when run by CLI.
 
     Args:
         df (pd.DataFrame): The dataframe to be served. contains at least one column with image paths.
-        data_path (str): The root path to the data. (e.g. /path/to/data)
         data_column (str): The column name in the dataframe that contains the image paths.
-        port (int): The port to run the server on.
+        data_path (str): The root path to the data. (e.g. /path/to/data)
+        port (int): The port to run the server on. If None, the first available port is chosen.
     """
 
     args = {
@@ -119,8 +119,10 @@ def zeno_next(df: pd.DataFrame, data_path: str, data_column: str, port: int):
         "id_column": data_column,
         "label_column": data_column,
         "batch_size": 1000,
-        "port": port,
     }
+
+    if port is not None:
+        args["port"] = port
 
     params = read_config(args)
 
